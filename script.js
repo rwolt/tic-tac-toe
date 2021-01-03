@@ -9,7 +9,7 @@ const game = (() => {
         game.playerTwo = player(names[1].value, names[1].dataset.mark);
         game.turn = [game.playerOne, game.playerTwo];
         game.currentPlayer = game.turn[0];
-        } 
+    } 
     let switchTurn = () => {
         switch (game.currentPlayer == game.turn[0]) {
             case true:
@@ -19,55 +19,41 @@ const game = (() => {
                 game.currentPlayer = game.turn[0];
                 break;
         }
-        }
-    
+    }
     return {makePlayers, switchTurn, currentPlayer, playerOne, playerTwo};
 })();
 
 const gameBoard = (() => {
-    let board = [];
+    const board = [];
+    board.length = 9;
     let squares = document.querySelectorAll('.square');
-    let displayEl = document.querySelector('.feedback');
+    let displayEl = document.querySelector('#feedback');
+    let startBtn = document.querySelector('#start');
    
     function updateMessage(message) {
         displayEl.textContent = message;
     }
-    function updateBoard() {
-        for (let square of squares) {
-            square.textContent = board[square.id].value;
+    function updateBoard(e) {
+            game.currentPlayer.placeMark(e.target.id);
+            e.target.textContent = board[e.target.id];
         }
+    for (let square of squares) {
+        square.addEventListener('click', updateBoard);
     }
-    return {board, updateBoard, updateMessage};  
+    startBtn.addEventListener('click', game.makePlayers);
+    return {board, updateMessage};  
 })();
-
 
 const player = (name, mark) => {
     let isWinner = false;
     const placeMark = (index) => {
-        if (gameBoard.board[index] == ''){
+        if (gameBoard.board[index] == undefined){
             gameBoard.board[index] = mark;
-            display.message = `${name} placed an ${mark} at index ${index}`;
-            display.update();
+            gameBoard.updateMessage(`${name} placed an ${mark} at index ${index}`);
+            game.switchTurn();
         } else {
-            display.message = 'Location is already marked';
-            display.update();
+            gameBoard.updateMessage('Location is already marked');
         }
     }
-
-    // const markSquare = (e) => {
-    //     let currentPlayer = (game.playerOne.isTurn) ? game.playerOne : game.playerTwo;
-    //     currentPlayer.placeMark(e.target.id);
-    //     e.target.textContent = game.currentPlayer.mark;
-    //     }    
-
-    return{name, placeMark, isWinner};
-
+    return{name, mark, placeMark, isWinner};
 };
-
-
-
-
-
-
-let startBtn = document.querySelector('#start');
-startBtn.addEventListener('click', game.makePlayers);
