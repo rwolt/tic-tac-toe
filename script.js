@@ -24,7 +24,7 @@ const game = (() => {
 })();
 
 const gameBoard = (() => {
-    const board = [,,,,,,,,];
+    const board = [];
     board.length = 9;
     let squares = document.querySelectorAll('.square');
     let displayEl = document.querySelector('#feedback');
@@ -45,7 +45,7 @@ const gameBoard = (() => {
 })();
 
 const player = (name, mark) => {
-    const winningCombos = [[0,1,2], [6,4,2]]
+    const winningCombos = [[0,1,2], [0,3,6], [6,7,8], [2,5,8], [0,4,8], [6,4,2], [3,4,5], [1,4,7]];
     const checkCombo = (combo, mark) => {
         for(let i = 0; i < 3; i++) {
             let currentCheck = combo[i];
@@ -70,8 +70,12 @@ const player = (name, mark) => {
     const placeMark = (index) => {
         if (gameBoard.board[index] == undefined){
             gameBoard.board[index] = mark;
-            gameBoard.updateMessage(`${name} placed an ${mark} at index ${index}`);
-            game.switchTurn();
+                if(checkWinner(winningCombos, mark)) {
+                gameBoard.updateMessage(`${name} is the Winner!`)
+                } else {
+                gameBoard.updateMessage(`${name} placed an ${mark} at index ${index}`);
+                game.switchTurn();
+                }
         } else {
             gameBoard.updateMessage('Location is already marked');
         }
