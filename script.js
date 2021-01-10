@@ -61,8 +61,8 @@ const game = (() => {
     //Player 1 gets to go first
     let makePlayers = () => {
         let names = document.querySelectorAll('.name');
-        game.playerOne = player(names[0].value, names[0].dataset.mark);
-        game.playerTwo = player(names[1].value, names[1].dataset.mark);
+        game.playerOne = player(names[0].value || 'Player 1', names[0].dataset.mark);
+        game.playerTwo = player(names[1].value || 'Player 2', names[1].dataset.mark);
         game.turn = [game.playerOne, game.playerTwo];
         game.currentPlayer = game.turn[0];
     }
@@ -99,6 +99,21 @@ const gameBoard = (() => {
         game.currentPlayer.placeMark(e.target.id);
         e.target.textContent = gameBoard.board[e.target.id];
     }
+
+    function enableHover() {
+        for (let square of squares) {
+            square.addEventListener('mouseenter', function(){square.classList.add('mouseover')});
+            square.addEventListener('mouseleave', function(){square.classList.remove('mouseover')});
+        }
+    }
+
+//     function disableHover() {
+//         for (let square of squares) {
+//             square.removeEventListener('mouseenter', function(){square.classList.add('mouseover')});
+//             square.removeEventListener('mouseleave', function(){square.classList.remove('mouseover')});
+//     }
+// }
+
     //Clear the board 
     let clearBoard = () => {
         stopGame(); 
@@ -121,6 +136,7 @@ const gameBoard = (() => {
             square.addEventListener('click', updateBoard);
         }
         startBtn.addEventListener('click', game.makePlayers);
+        startBtn.addEventListener('click', enableHover);
         resetBtn.addEventListener('click', clearBoard);
     }
 
@@ -131,7 +147,9 @@ const gameBoard = (() => {
         for (let square of squares) {
             square.removeEventListener('click', updateBoard);
         }
+        // disableHover();
     }
+        
     //Check if the board is full
     let isFull = () => {
         for (let index of gameBoard.board) {
